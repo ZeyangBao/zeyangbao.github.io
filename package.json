@@ -1,0 +1,17 @@
+{
+  "name": "zeyangbao-website",
+  "version": "1.0.0",
+  "description": "Personal academic website for Zeyang Bao",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js --watch"
+  },
+  "keywords": [],
+  "author": "Zeyang Bao",
+  "license": "ISC",
+  "dependencies": {
+    "markdown-it": "^14.0.0",
+    "gray-matter": "^4.0.3",
+    "js-yaml": "^4.1.0"
+  }
+}
