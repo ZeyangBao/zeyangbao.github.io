@@ -1,0 +1,54 @@
+# Experience & Education Data
+
+education:
+  - school: "UC Berkeley"
+    degree: "Capstone Thesis: Bert Language Model Post Training"
+    date: "2021 - 2022"
+    description: |
+      Focused on natural language processing and large language models.
+  - school: "Rutgers University, New Brunswick"
+    degree: "Bachelor of Science in Math and Computer Science (Double Major)"
+    date: "2016 - 2020"
+    description: |
+      **Honors:** Aresty Research Fellowship
+
+experience:
+  - title: "AI Engineer"
+    company: "Google"
+    team: "NotebookLM Team"
+    date: "Present"
+    location: "San Francisco, CA"
+    description: |
+      Working on Google's NotebookLM, an AI-first notebook that helps users understand and synthesize complex information through advanced language models and retrieval systems.
+    tags: ["LLMs", "RAG", "Product"]
+  - title: "Cloud and AI Intern"
+    company: "Microsoft"
+    date: "May 2021 - Aug 2021"
+    location: ""
+    description: |
+      Worked on Cloud and AI technologies.
+    tags: ["Cloud", "AI"]
+  - title: "Research Intern"
+    company: "OPPO Research Center"
+    date: "Aug 2020 - Apr 2021"
+    location: ""
+    description: |
+      Conducted research on Cross Modal Search Retrieval.
+    tags: ["Cross-Modal", "Search", "Retrieval"]
+
+publications:
+  - title: "LiveObj: Object semantics-based viewport prediction for live mobile virtual reality streaming"
+    authors: "Zeyang Bao, et al."
+    venue: "IEEE International Conference on Multimedia and Expo (ICME)"
+    year: "2020"
+    link: "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=sGHmnCIAAAAJ&citation_for_view=sGHmnCIAAAAJ:u5HHmVD_uO8C"
+  - title: "Exploring CNN-based viewport prediction for live virtual reality streaming"
+    authors: "Zeyang Bao, et al."
+    venue: "IEEE International Conference on Communications (ICC)"
+    year: "2020"
+    link: "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=sGHmnCIAAAAJ&citation_for_view=sGHmnCIAAAAJ:u-x6o8ySG0sC"
+  - title: "Combining Dynamic Passive Haptics and Haptic Retargeting for Enhanced Haptic Feedback in Virtual Reality"
+    authors: "Zeyang Bao, et al."
+    venue: "IEEE Virtual Reality (VR)"
+    year: "2019"
+    link: "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=sGHmnCIAAAAJ&citation_for_view=sGHmnCIAAAAJ:d1gkVwhDpl0C"

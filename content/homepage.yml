@@ -6,10 +6,10 @@ bio:
   title: "AI Engineer"
   company: "Google • NotebookLM Team"
   description: |
-    I'm an AI engineer at <a href="https://notebooklm.google/" class="external-link">Google NotebookLM</a>,
-    where I work on building intelligent systems that help people understand and interact with information.
-    My focus is on large language models, retrieval-augmented generation, and creating AI-powered tools
-    that enhance knowledge work and learning.
+    I'm an AI Engineer at <a href="https://notebooklm.google/" class="external-link">Google NotebookLM</a>,
+    building intelligent systems that help people understand and interact with information.
+    My background spans large language models, retrieval-augmented generation, and cross-modal search.
+    Previously at Microsoft and OPPO Research.
   image: "images/avatar.jpg"
 
 social_links:
@@ -20,7 +20,7 @@ social_links:
   - text: "🐙 GitHub"
     url: "#"
   - text: "🎓 Scholar"
-    url: "#"
+    url: "https://scholar.google.com/citations?user=sGHmnCIAAAAJ&hl=en"
   - text: "📄 CV"
     url: "#"
 
@@ -31,50 +31,34 @@ research_interests:
   - icon: "🔍"
     title: "Retrieval-Augmented Generation"
     description: "Building systems that combine neural retrieval with generation for grounded, factual AI responses."
+  - icon: "�️"
+    title: "Cross-Modal Understanding"
+    description: "Researching techniques for connecting vision, language, and other modalities."
   - icon: "📚"
     title: "Knowledge Management"
     description: "Creating AI-powered tools that help people organize, understand, and synthesize information."
-  - icon: "💬"
-    title: "Natural Language Processing"
-    description: "Advancing techniques in language understanding, generation, and multi-modal AI systems."
-  - icon: "🎯"
-    title: "Human-AI Interaction"
-    description: "Designing intuitive interfaces and interaction patterns for AI-assisted workflows."
-  - icon: "⚡"
-    title: "ML Systems & Infrastructure"
-    description: "Optimizing model serving, scaling, and deployment for production AI applications."
 
 featured_work:
-  - title: "NotebookLM: AI-Powered Research Assistant"
-    date: "2025 - Present"
+  - title: "NotebookLM"
+    date: "Present"
     company: "Google"
     description: |
-      Working on Google's NotebookLM, an AI-first notebook that helps users understand complex information
-      through intelligent summarization, question-answering, and synthesis. The system leverages advanced
-      LLMs and RAG techniques to provide grounded, source-cited responses.
+      Building an AI-first notebook that helps users understand complex information through intelligent
+      summarization, question-answering, and synthesis.
     tags: ["LLMs", "RAG", "Product"]
-  - title: "Galaxy XR Likeness: ML-Driven Avatar"
-    date: "2023 - 2025"
-    company: "Google XR"
+  - title: "Cross-Modal Search"
+    date: "2020-2021"
+    company: "OPPO Research"
     description: |
-      Developed an advanced ML-driven avatar system for XR environments, focusing on realistic likeness
-      generation and real-time animation. This project involved cutting-edge techniques in 3D reconstruction,
-      facial rigging, and neural rendering to create highly expressive and personalized digital representations.
-    tags: ["XR", "Avatar", "ML", "Product"]
+      Conducted research on cross-modal search retrieval, bridging the gap between different data modalities.
+    tags: ["Research", "CV", "NLP"]
 
 news:
-  - date: "November 2025"
-    title: "NotebookLM Infographic and Slides Launch"
-    description: |
-      Excited to share that NotebookLM now generates AI-powered infographic and slides of your sources,
-      making research more accessible and engaging.
-  - date: "June 2024"
-    title: "Speaking at AI Conference"
-    description: |
-      Presented on "Building Production-Ready RAG Systems" at the AI Engineering Summit,
-      sharing insights from our work on NotebookLM.
   - date: "2023"
     title: "Joined Google NotebookLM Team"
     description: |
-      Started as an AI Engineer on the NotebookLM team, working on next-generation AI-powered
-      research and knowledge management tools.
+      Started as an AI Engineer on the NotebookLM team.
+  - date: "2022"
+    title: "Graduated from UC Berkeley"
+    description: |
+      Completed Capstone Thesis on Bert Language Model Post Training.
