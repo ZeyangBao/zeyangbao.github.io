@@ -3,152 +3,42 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Building NotebookLM: Lessons in AI-Powered Note-Taking - Zeyang Bao</title>
+    <title>Building NotebookLM: Architecting an AI-First Knowledge Environment - Zeyang Bao</title>
 
     <meta name="author" content="Zeyang Bao">
-    <meta name="description" content="A behind-the-scenes look at the challenges and solutions in building NotebookLM, Google's AI-first notebook. From handling long documents to ensuring factual accuracy, here's what we learned about deploying LLMs for knowledge work.">
+    <meta name="description"
+        content="Technical reflections on the design and implementation of NotebookLM, focusing on grounding, retrieval strategies, and system evaluation.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="shortcut icon" href="../images/favicon/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="../stylesheet.css">
-
-    <style>
-        .post-content {
-            max-width: 700px;
-            margin: 0 auto;
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-
-        .post-content h2 {
-            margin-top: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .post-content h3 {
-            margin-top: 2rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .post-content p {
-            margin-bottom: 1.5rem;
-        }
-
-        .post-content ul,
-        .post-content ol {
-            margin-bottom: 1.5rem;
-            margin-left: 2rem;
-        }
-
-        .post-content li {
-            margin-bottom: 0.5rem;
-        }
-
-        .post-content code {
-            background: var(--background-color);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-            color: var(--accent-color);
-        }
-
-        .post-content pre {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 1.5rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin-bottom: 1.5rem;
-        }
-
-        .post-content pre code {
-            background: transparent;
-            color: inherit;
-            padding: 0;
-        }
-
-        .post-content blockquote {
-            border-left: 4px solid var(--accent-color);
-            padding-left: 1.5rem;
-            margin: 2rem 0;
-            font-style: italic;
-            color: var(--text-light);
-        }
-
-        .post-header {
-            text-align: center;
-            padding: 3rem 0 2rem;
-            background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
-        }
-
-        .post-title {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-
-        .post-meta-header {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            color: var(--text-light);
-            font-size: 1rem;
-        }
-
-        .author-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 2rem;
-            background: var(--background-color);
-            border-radius: 12px;
-            margin: 3rem 0;
-        }
-
-        .author-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .author-info h3 {
-            margin-bottom: 0.25rem;
-        }
-
-        .author-info p {
-            margin-bottom: 0;
-            color: var(--text-light);
-        }
-    </style>
 </head>
 
 <body>
-  <nav>
-    <div class="container">
-      <div class="logo">Zeyang Bao</div>
-      <ul>
-        <li><a href="../index.html">Home</a></li>
-        <li><a href="../experience.html">Experience</a></li>
-        <li><a href="../writing.html">Writing</a></li>
-      </ul>
-    </div>
-  </nav>
+    <nav>
+        <div class="container">
+            <div class="logo">Zeyang Bao</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../experience.html">Experience</a></li>
+                <li><a href="../writing.html">Writing</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <!-- Post Header -->
     <header class="post-header">
-        <div class="container content-wrapper">
-            <h1 class="post-title">Building NotebookLM: Lessons in AI-Powered Note-Taking</h1>
+        <div class="container">
+            <h1 class="post-title">Building NotebookLM: Architecting an AI-First Knowledge Environment</h1>
             <div class="post-meta-header">
                 <span>📅 December 2024</span>
-                <span>⏱️ 8 min read</span>
+                <span>⏱️ 10 min read</span>
                 <span>✍️ Zeyang Bao</span>
             </div>
-            <div class="blog-tags mt-2">
+            <div class="blog-tags mt-1">
                 <span class="tag">NotebookLM</span>
-                <span class="tag">Product Development</span>
-                <span class="tag">LLMs</span>
+                <span class="tag">LLM Systems</span>
+                <span class="tag">Knowledge Management</span>
                 <span class="tag">RAG</span>
             </div>
         </div>
@@ -159,97 +49,100 @@
         <div class="container">
             <div class="post-content">
 
-                <p>When we set out to build NotebookLM, we had a simple but ambitious goal: create an AI assistant that could help people truly understand complex information, not just retrieve it. After months of development and iteration, here are the key lessons we learned about building AI-powered knowledge tools at scale.</p>
-                <h2>The Challenge: Beyond Simple Q&amp;A</h2>
-                <p>Most AI assistants today are great at answering straightforward questions, but knowledge work requires something deeper. When you’re researching a complex topic, you need to:</p>
-                <ul>
-                <li>Synthesize information from multiple sources</li>
-                <li>Understand nuanced arguments and perspectives</li>
-                <li>Track where information came from (citations matter!)</li>
-                <li>Build mental models, not just collect facts</li>
-                </ul>
-                <p>This meant we couldn’t just slap a language model on top of a document viewer and call it done. We needed to rethink the entire interaction model.</p>
-                <h2>Lesson 1: Grounding is Everything</h2>
-                <p>The biggest challenge with LLMs is hallucination—the tendency to generate plausible-sounding but incorrect information. For a research tool, this is unacceptable. Our users need to trust that the information they’re getting is accurate and traceable.</p>
-                <p>We solved this through aggressive grounding:</p>
-                <ul>
-                <li><strong>Source-first architecture:</strong> Every response must be traceable to specific passages in the user’s documents</li>
-                <li><strong>Citation system:</strong> We don’t just cite documents; we cite specific paragraphs and provide inline references</li>
-                <li><strong>Retrieval-augmented generation (RAG):</strong> The model only has access to retrieved context, not its parametric knowledge, for factual claims</li>
-                </ul>
-                <blockquote>
-                <p>“The key insight was that for knowledge work, it’s better to say ‘I don’t know’ than to hallucinate. Users can work with uncertainty; they can’t work with confident misinformation.”</p>
-                </blockquote>
-                <h2>Lesson 2: Chunking is an Art, Not a Science</h2>
-                <p>One of the most underrated challenges in RAG systems is document chunking—how you break up long documents into retrievable pieces. Get it wrong, and you’ll either:</p>
-                <ul>
-                <li>Lose important context (chunks too small)</li>
-                <li>Retrieve irrelevant information (chunks too large)</li>
-                <li>Split related ideas across chunks (poor boundaries)</li>
-                </ul>
-                <p>We experimented with multiple strategies:</p>
-                <ul>
-                <li><strong>Fixed-size chunks:</strong> Simple but often breaks semantic units</li>
-                <li><strong>Paragraph-based:</strong> Better semantically but varies wildly in size</li>
-                <li><strong>Semantic chunking:</strong> Use embeddings to identify topic boundaries</li>
-                <li><strong>Hierarchical chunks:</strong> Multiple granularities for different query types</li>
-                </ul>
-                <p>We ultimately landed on a hybrid approach that considers document structure (headings, paragraphs), semantic coherence, and optimal chunk size for our retrieval system.</p>
-                <h2>Lesson 3: Evaluation is Your North Star</h2>
-                <p>You can’t improve what you can’t measure. But measuring LLM quality is notoriously difficult. We built a comprehensive evaluation framework with multiple dimensions:</p>
-                <h3>Automated Metrics</h3>
-                <ul>
-                <li><strong>Retrieval accuracy:</strong> Are we finding the right passages?</li>
-                <li><strong>Citation precision:</strong> Do citations actually support the claims?</li>
-                <li><strong>Factual consistency:</strong> Does the response contradict the sources?</li>
-                </ul>
-                <h3>Human Evaluation</h3>
-                <ul>
-                <li><strong>Helpfulness:</strong> Does this actually help the user understand?</li>
-                <li><strong>Coherence:</strong> Is the response well-structured and clear?</li>
-                <li><strong>Completeness:</strong> Does it address all aspects of the question?</li>
-                </ul>
-                <p>The key was running these evaluations continuously, not just at launch. LLM behavior can be surprisingly sensitive to prompt changes, so we needed constant monitoring.</p>
-                <h2>Lesson 4: Latency Matters More Than You Think</h2>
-                <p>In our early prototypes, we optimized for quality above all else. But we quickly learned that for an interactive tool, latency is part of the user experience. A perfect answer that takes 30 seconds is less useful than a good answer in 3 seconds.</p>
-                <p>We made several optimizations:</p>
-                <ul>
-                <li><strong>Streaming responses:</strong> Show partial results as they’re generated</li>
-                <li><strong>Aggressive caching:</strong> Cache embeddings, retrievals, and common queries</li>
-                <li><strong>Model optimization:</strong> Distillation and quantization where quality permits</li>
-                <li><strong>Speculative retrieval:</strong> Pre-fetch likely follow-up queries</li>
-                </ul>
-                <p>These optimizations reduced our p95 latency by 40% while maintaining quality.</p>
-                <h2>Lesson 5: The Product is the Prompt</h2>
-                <p>One surprising insight: in an LLM-powered product, the prompt engineering <em>is</em> the product development. Small changes to system prompts can dramatically change user experience.</p>
-                <p>We treat prompts as first-class code:</p>
-                <ul>
-                <li>Version control and code review for all prompt changes</li>
-                <li>A/B testing for prompt variations</li>
-                <li>Regression testing to catch quality degradations</li>
-                <li>Prompt templates with clear documentation</li>
-                </ul>
-                <h2>Looking Forward</h2>
-                <p>Building NotebookLM has been an incredible learning experience. We’re still in the early days of AI-powered knowledge tools, and there’s so much more to explore:</p>
-                <ul>
-                <li>Multimodal understanding (images, tables, diagrams)</li>
-                <li>Collaborative research with AI</li>
-                <li>Personalization and learning user preferences</li>
-                <li>Proactive insights and connections</li>
-                </ul>
-                <p>The future of knowledge work is collaborative—humans and AI working together, each contributing their unique strengths. I’m excited to be building that future.</p>
+                <p>When we conceptualized NotebookLM, our objective transcended the standard chatbot paradigm. We aimed
+                    to build a research-centric environment where the AI acts as a collaborative partner, deeply
+                    grounded in the user's own data. This transition from "retrieve information" to "synthesize
+                    knowledge" presented a unique set of engineering and UX challenges.</p>
 
+                <div class="toc">
+                    <h4>Table of Contents</h4>
+                    <ul>
+                        <li><a href="#grounding">1. The Primacy of Grounding</a></li>
+                        <li><a href="#chunking">2. Semantic Chunking at Scale</a></li>
+                        <li><a href="#evaluation">3. Rigorous Evaluation Frameworks</a></li>
+                        <li><a href="#latency">4. Optimizing for Interactive Latency</a></li>
+                        <li><a href="#future">5. The Path Forward</a></li>
+                    </ul>
+                </div>
+
+                <h2 id="grounding">The Primacy of Grounding</h2>
+                <p>In a professional research context, the cost of hallucination is prohibitive. Users depend on
+                    NotebookLM to organize and query sensitive information where precision is paramount. We realized
+                    early on that a conventional RAG (Retrieval-Augmented Generation) pipeline wasn't sufficient; we
+                    needed a "source-first" architecture.</p>
+                <p>This involved several key implementation details:</p>
+                <ul>
+                    <li><strong>Strict Context Adherence:</strong> We engineered system prompts and temperature settings
+                        to prioritize document retrieval over the model's parametric knowledge.</li>
+                    <li><strong>Granular Citation Mapping:</strong> We developed a system that cross-references
+                        generated claims against specific paragraph-level source data, providing users with instant
+                        verification.</li>
+                    <li><strong>Conflict Resolution:</strong> Handling cases where different sources provide
+                        contradictory information required building logic to present multi-perspective views rather than
+                        a single, potentially biased answer.</li>
+                </ul>
+
+                <blockquote>
+                    "The core philosophy of NotebookLM is that AI should augment human intelligence by providing a
+                    reliable, traceable bridge between raw data and actionable insight."
+                </blockquote>
+
+                <h2 id="chunking">Semantic Chunking at Scale</h2>
+                <p>The efficacy of a RAG system is largely determined by its chunking strategy. Traditional fixed-length
+                    sliding windows often fracture semantic units, leading to poor retrieval performance. For
+                    NotebookLM, we experimented with several sophisticated approaches:</p>
+                <ul>
+                    <li><strong>Structural Awareness:</strong> Parsing documents into their logical components (headers,
+                        sections, paragraphs) to ensure related information stays together.</li>
+                    <li><strong>Overlapping Semantic Buffers:</strong> Using overlap not just for tokens, but for
+                        semantic context, ensuring that the boundaries of one chunk contain enough information to
+                        understand the transition to the next.</li>
+                    <li><strong>Hierarchical Embeddings:</strong> We explore maintaining both small, high-precision
+                        chunks for specific facts and larger summaries for high-level queries.</li>
+                </ul>
+
+                <h2 id="evaluation">Rigorous Evaluation Frameworks</h2>
+                <p>Building an AI product is an iterative process of evaluation. We moved away from anecdotal "vibe
+                    checks" to a rigorous, multi-dimensional evaluation pipeline:</p>
+                <h3>Automated Assessment</h3>
+                <p>We utilize a set of "judge models" to evaluate generated responses against the ground-truth documents
+                    on dimensions like <strong>faithfulness</strong> (no hallucinations) and <strong>relevance</strong>
+                    (directly addressing the user query).</p>
+                <h3>Human-in-the-Loop</h3>
+                <p>Technical experts and researchers perform longitudinal studies to evaluate the utility of NotebookLM
+                    over several hours of research. This helps us understand if the tool is actually reducing cognitive
+                    load or simply adding more complexity.</p>
+
+                <h2 id="latency">Optimizing for Interactive Latency</h2>
+                <p>Perceived performance is critical for a smooth research workflow. If an LLM takes 15 seconds to
+                    respond, the user's flow state is broken. We focused on several optimizations:</p>
+                <ul>
+                    <li><strong>Streamed Synthesis:</strong> Implementing robust streaming protocols so users see the
+                        response forming in real-time.</li>
+                    <li><strong>Speculative Pre-fetching:</strong> Inverting the retrieval pattern to pre-fetch context
+                        based on the user's cursor position or active document view.</li>
+                    <li><strong>Quantized Deployments:</strong> Optimizing our inference layer to use smaller, faster
+                        models for non-critical sub-tasks without sacrificing overall quality.</li>
+                </ul>
+
+                <h2 id="future">The Path Forward</h2>
+                <p>We are still in the early stages of exploring what AI-first knowledge management can become. Our
+                    roadmap includes expanding into multi-modal understanding—handling tables and complex diagrams with
+                    the same level of grounding as text—and building deeper collaborative features that allow teams of
+                    researchers to work alongside AI agents.</p>
+                <p>The goal remains constant: to empower users to think more clearly and deeply with the help of
+                    intelligent tools.</p>
 
                 <hr style="margin: 3rem 0; border: none; border-top: 1px solid var(--border-color);">
 
                 <div class="author-section">
                     <div class="author-info">
                         <h3>Zeyang Bao</h3>
-                        <p>AI Engineer at Google, working on NotebookLM. Passionate about building AI systems that
-                            enhance human knowledge and understanding.</p>
+                        <p>AI Engineer at Google, specializing in LLM systems and NotebookLM. My research focus is on
+                            building grounded AI environments that enhance human cognitive capabilities.</p>
                         <div class="social-links" style="margin-top: 1rem;">
                             <a href="../index.html" style="font-size: 0.9rem;">← Back to Home</a>
-                            <a href="../writing.html" style="font-size: 0.9rem; margin-left: 1rem;">← All Posts</a>
+                            <a href="../writing.html" style="font-size: 0.9rem; margin-left: 1.5rem;">← All Writing</a>
                         </div>
                     </div>
                 </div>
@@ -258,14 +151,14 @@
         </div>
     </article>
 
-  <footer>
-    <div class="container">
-      <p>&copy; 2024 Zeyang Bao. All rights reserved.</p>
-      <p style="font-size: 0.9rem; margin-top: 0.5rem;">
-        Built with HTML & CSS • Hosted on GitHub Pages
-      </p>
-    </div>
-  </footer>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Zeyang Bao. All rights reserved.</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+                Academic-First Design • Built with Modern Web Standards
+            </p>
+        </div>
+    </footer>
 </body>
 
 </html>

@@ -3,151 +3,41 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Understanding Retrieval-Augmented Generation - Zeyang Bao</title>
+    <title>Understanding Retrieval-Augmented Generation: From Theory to Implementation - Zeyang Bao</title>
 
     <meta name="author" content="Zeyang Bao">
-    <meta name="description" content="A technical deep-dive into RAG systems: how they work, why they matter, and best practices for implementation. We'll cover retrieval strategies, chunking techniques, and methods for evaluating RAG system performance.">
+    <meta name="description"
+        content="A technical deep-dive into RAG systems: evaluating retrieval strategies, embedding selection, and performance metrics for production LLM applications.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="shortcut icon" href="../images/favicon/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="../stylesheet.css">
-
-    <style>
-        .post-content {
-            max-width: 700px;
-            margin: 0 auto;
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-
-        .post-content h2 {
-            margin-top: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .post-content h3 {
-            margin-top: 2rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .post-content p {
-            margin-bottom: 1.5rem;
-        }
-
-        .post-content ul,
-        .post-content ol {
-            margin-bottom: 1.5rem;
-            margin-left: 2rem;
-        }
-
-        .post-content li {
-            margin-bottom: 0.5rem;
-        }
-
-        .post-content code {
-            background: var(--background-color);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-            color: var(--accent-color);
-        }
-
-        .post-content pre {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 1.5rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin-bottom: 1.5rem;
-        }
-
-        .post-content pre code {
-            background: transparent;
-            color: inherit;
-            padding: 0;
-        }
-
-        .post-content blockquote {
-            border-left: 4px solid var(--accent-color);
-            padding-left: 1.5rem;
-            margin: 2rem 0;
-            font-style: italic;
-            color: var(--text-light);
-        }
-
-        .post-header {
-            text-align: center;
-            padding: 3rem 0 2rem;
-            background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
-        }
-
-        .post-title {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-
-        .post-meta-header {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            color: var(--text-light);
-            font-size: 1rem;
-        }
-
-        .author-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 2rem;
-            background: var(--background-color);
-            border-radius: 12px;
-            margin: 3rem 0;
-        }
-
-        .author-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .author-info h3 {
-            margin-bottom: 0.25rem;
-        }
-
-        .author-info p {
-            margin-bottom: 0;
-            color: var(--text-light);
-        }
-    </style>
 </head>
 
 <body>
-  <nav>
-    <div class="container">
-      <div class="logo">Zeyang Bao</div>
-      <ul>
-        <li><a href="../index.html">Home</a></li>
-        <li><a href="../experience.html">Experience</a></li>
-        <li><a href="../writing.html">Writing</a></li>
-      </ul>
-    </div>
-  </nav>
+    <nav>
+        <div class="container">
+            <div class="logo">Zeyang Bao</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../experience.html">Experience</a></li>
+                <li><a href="../writing.html">Writing</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <!-- Post Header -->
     <header class="post-header">
-        <div class="container content-wrapper">
-            <h1 class="post-title">Understanding Retrieval-Augmented Generation</h1>
+        <div class="container">
+            <h1 class="post-title">Understanding Retrieval-Augmented Generation: From Theory to Implementation</h1>
             <div class="post-meta-header">
                 <span>📅 November 2024</span>
                 <span>⏱️ 12 min read</span>
                 <span>✍️ Zeyang Bao</span>
             </div>
-            <div class="blog-tags mt-2">
+            <div class="blog-tags mt-1">
                 <span class="tag">RAG</span>
-                <span class="tag">Technical Deep-Dive</span>
+                <span class="tag">Production AI</span>
                 <span class="tag">Vector Search</span>
                 <span class="tag">Embeddings</span>
             </div>
@@ -159,71 +49,88 @@
         <div class="container">
             <div class="post-content">
 
-                <p>Retrieval-Augmented Generation (RAG) has emerged as one of the most important techniques for building production LLM applications. By combining the knowledge retrieval capabilities of search systems with the natural language generation of large language models, RAG enables AI systems to provide accurate, grounded responses while remaining cost-effective and maintainable.</p>
-                <h2>What is RAG?</h2>
-                <p>At its core, RAG is a technique that enhances language model outputs by retrieving relevant information from a knowledge base before generating a response. Instead of relying solely on the model’s parametric knowledge (what it learned during training), RAG systems dynamically fetch relevant context to inform the generation process.</p>
-                <h2>Why RAG Matters</h2>
-                <p>Traditional LLMs face several challenges when used in production:</p>
-                <ul>
-                <li><strong>Hallucination</strong>: Models can generate plausible-sounding but incorrect information</li>
-                <li><strong>Staleness</strong>: Training data has a cutoff date; models don’t know recent information</li>
-                <li><strong>Domain specificity</strong>: General models lack specialized knowledge for specific domains</li>
-                <li><strong>Attribution</strong>: It’s difficult to cite sources or verify claims</li>
-                </ul>
-                <p>RAG addresses all of these issues by grounding generation in retrieved documents.</p>
-                <h2>The RAG Architecture</h2>
-                <p>A typical RAG system consists of several components:</p>
-                <h3>1. Document Ingestion</h3>
-                <p>Documents are processed and chunked into manageable pieces. Each chunk is then converted into a dense vector representation (embedding) using a specialized encoder model.</p>
-                <h3>2. Vector Storage</h3>
-                <p>Embeddings are stored in a vector database that enables efficient similarity search. Popular options include Pinecone, Weaviate, and Chroma.</p>
-                <h3>3. Retrieval</h3>
-                <p>When a user query arrives, it’s encoded into the same embedding space. The system then finds the most similar document chunks using approximate nearest neighbor search.</p>
-                <h3>4. Generation</h3>
-                <p>Retrieved chunks are combined with the user’s query in a prompt template and sent to the language model. The model generates a response grounded in the retrieved context.</p>
-                <h2>Best Practices</h2>
-                <h3>Chunking Strategy</h3>
-                <p>Choose chunk sizes that balance context with specificity:</p>
-                <ul>
-                <li>Too small: Lose important context</li>
-                <li>Too large: Retrieve irrelevant information</li>
-                <li>Sweet spot: Usually 200-500 tokens with overlap</li>
-                </ul>
-                <h3>Embedding Models</h3>
-                <p>Select embedding models that match your domain:</p>
-                <ul>
-                <li>General: OpenAI’s text-embedding-ada-002</li>
-                <li>Code: OpenAI’s text-embedding-code</li>
-                <li>Multilingual: multilingual-e5-large</li>
-                </ul>
-                <h3>Retrieval Tuning</h3>
-                <p>Optimize for precision and recall:</p>
-                <ul>
-                <li>Top-k selection: Start with 3-5 chunks</li>
-                <li>Reranking: Use a cross-encoder for better relevance</li>
-                <li>Hybrid search: Combine dense and sparse (BM25) retrieval</li>
-                </ul>
-                <h2>Evaluation</h2>
-                <p>Measure both retrieval and generation quality:</p>
-                <ul>
-                <li><strong>Retrieval metrics</strong>: Precision@k, Recall@k, MRR</li>
-                <li><strong>Generation metrics</strong>: Faithfulness, answer relevance, context relevance</li>
-                <li><strong>End-to-end</strong>: Human evaluation, user satisfaction</li>
-                </ul>
-                <h2>Conclusion</h2>
-                <p>RAG is a powerful pattern that makes LLMs more reliable, accurate, and useful for real-world applications. By understanding its components and best practices, you can build systems that provide value while avoiding common pitfalls.</p>
+                <p>Retrieval-Augmented Generation (RAG) has matured from a novel idea to a foundational architecture for
+                    production-grade Large Language Model (LLM) applications. By decoupling the model's reasoning
+                    capabilities from its knowledge base, RAG addresses the most critical limitations of static LLMs:
+                    hallucination, data staleness, and lack of domain-specific context.</p>
 
+                <div class="toc">
+                    <h4>Table of Contents</h4>
+                    <ul>
+                        <li><a href="#core-concept">1. The Core RAG Paradigm</a></li>
+                        <li><a href="#pipeline">2. Deconstructing the RAG Pipeline</a></li>
+                        <li><a href="#best-practices">3. Implementation Best Practices</a></li>
+                        <li><a href="#evaluation">4. Multi-Dimensional Evaluation</a></li>
+                        <li><a href="#conclusion">5. Conclusion</a></li>
+                    </ul>
+                </div>
+
+                <h2 id="core-concept">The Core RAG Paradigm</h2>
+                <p>At its essence, RAG is a pattern that augments the input to an LLM with external data retrieved from
+                    a custom knowledge base. This allows the model to "peek" at relevant documents before formulating an
+                    answer, effectively turning a closed-book exam into an open-book one. This grounding in external
+                    evidence significantly enhances the reliability and verifiability of the system's output.</p>
+
+                <h2 id="pipeline">Deconstructing the RAG Pipeline</h2>
+                <p>A production RAG system is a multi-stage pipeline, where each stage offers opportunities for
+                    optimization:</p>
+
+                <h3>1. Ingestion & Indexing</h3>
+                <p>Documents are parsed, cleaned, and split into semantic chunks. These chunks are then passed through
+                    an embedding model—a specialized neural network that represents text as high-dimensional vectors.
+                    These vectors are indexed in a vector database designed for fast similarity search.</p>
+
+                <h3>2. The Retrieval Stage</h3>
+                <p>When a query is received, it is also embedded into the same vector space. The system performs a
+                    search to find the top $k$ most relevant document chunks based on distance metrics like cosine
+                    similarity or Euclidean distance.</p>
+
+                <h3>3. Augmentation & Generation</h3>
+                <p>The retrieved chunks are concatenated with the original query into a structured prompt. This
+                    context-rich prompt is sent to the generator (the LLM), which synthesizes the final response,
+                    ideally citing its sources for transparency.</p>
+
+                <h2 id="best-practices">Implementation Best Practices</h2>
+                <p>Moving from a prototype to a production RAG system requires careful tuning of several
+                    hyperparameters:</p>
+                <ul>
+                    <li><strong>Hybrid Search:</strong> Combining vector search with traditional keyword search (BM25)
+                        often yields better results, as it captures both semantic meaning and exact term matches.</li>
+                    <li><strong>Reranking:</strong> Using a secondary "cross-encoder" model to rerank the top retrieved
+                        chunks can significantly improve precision by considering the full context of the query-document
+                        pair.</li>
+                    <li><strong>Small-to-Big Retrieval:</strong> Retrieving small chunks for high embedding accuracy,
+                        but providing the generator with the surrounding "parent" chunks to ensure sufficient context.
+                    </li>
+                </ul>
+
+                <h2 id="evaluation">Multi-Dimensional Evaluation</h2>
+                <p>Evaluating RAG systems requires moving beyond simple accuracy. We look at three primary axes, often
+                    referred to as the "RAG Triad":</p>
+                <ol>
+                    <li><strong>Context Relevance:</strong> Is the retrieved information actually useful for answering
+                        the query? (Evaluates the Retrieval stage).</li>
+                    <li><strong>Groundedness:</strong> Is the generated answer supported by the retrieved context?
+                        (Prevents hallucinations).</li>
+                    <li><strong>Answer Relevance:</strong> Does the answer actually address the user's information need?
+                    </li>
+                </ol>
+
+                <h2 id="conclusion">Conclusion</h2>
+                <p>RAG is not just a trend; it's a fundamental shift in how we build intelligent software. By grounding
+                    AI in verifiable facts, we move closer to creating systems that are not only powerful but also
+                    trustworthy and useful in high-stakes professional environments.</p>
 
                 <hr style="margin: 3rem 0; border: none; border-top: 1px solid var(--border-color);">
 
                 <div class="author-section">
                     <div class="author-info">
                         <h3>Zeyang Bao</h3>
-                        <p>AI Engineer at Google, working on NotebookLM. Passionate about building AI systems that
-                            enhance human knowledge and understanding.</p>
+                        <p>AI Engineer at Google, specializing in LLM systems and NotebookLM. My research focus is on
+                            building grounded AI environments that enhance human cognitive capabilities.</p>
                         <div class="social-links" style="margin-top: 1rem;">
                             <a href="../index.html" style="font-size: 0.9rem;">← Back to Home</a>
-                            <a href="../writing.html" style="font-size: 0.9rem; margin-left: 1rem;">← All Posts</a>
+                            <a href="../writing.html" style="font-size: 0.9rem; margin-left: 1.5rem;">← All Writing</a>
                         </div>
                     </div>
                 </div>
@@ -232,14 +139,14 @@
         </div>
     </article>
 
-  <footer>
-    <div class="container">
-      <p>&copy; 2024 Zeyang Bao. All rights reserved.</p>
-      <p style="font-size: 0.9rem; margin-top: 0.5rem;">
-        Built with HTML & CSS • Hosted on GitHub Pages
-      </p>
-    </div>
-  </footer>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Zeyang Bao. All rights reserved.</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+                Academic-First Design • Built with Modern Web Standards
+            </p>
+        </div>
+    </footer>
 </body>
 
 </html>
